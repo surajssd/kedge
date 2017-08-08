@@ -3,6 +3,7 @@
 GITCOMMIT := $(shell git rev-parse --short HEAD)
 BUILD_FLAGS := -ldflags="-w -X github.com/kedgeproject/kedge/cmd.GITCOMMIT=$(GITCOMMIT)"
 PKGS = $(shell glide novendor)
+UNITPKGS = $(shell glide novendor | grep -v tests)
 
 default: bin
 
@@ -52,7 +53,11 @@ check-vendor:
 
 .PHONY: test-unit
 test-unit:
-	go test $(PKGS)
+	go test $(UNITPKGS)
+
+.PHONY: test-e2e
+test-e2e:
+	go test github.com/kedgeproject/kedge/tests/e2e
 
 # Run all tests
 .PHONY: test
